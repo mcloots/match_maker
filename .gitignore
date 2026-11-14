@@ -4,6 +4,10 @@
 *.pyc
 *.swp
 .DS_Store
+Thumbs.db
+Desktop.ini
+*.tmp
+*.bak
 .atom/
 .build/
 .buildlog/
@@ -28,10 +32,28 @@ migrate_working_dir/
 **/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins-dependencies
+.flutter-plugins
 .pub-cache/
 .pub/
 /build/
 /coverage/
+
+# Node.js dependencies for the seed scripts
+node_modules/
+
+# Local environment variables (keep example files versioned)
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+
+# Firebase local cache, emulator data and Admin SDK private keys
+.firebase/
+firebase-export-*/
+service-account*.json
+serviceAccount*.json
+*-firebase-adminsdk-*.json
 
 # Symbolication related
 app.*.symbols

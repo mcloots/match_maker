@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class MatchHeader extends StatelessWidget {
-  const MatchHeader({super.key});
+  const MatchHeader({super.key, this.onProfile});
+
+  final VoidCallback? onProfile;
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -13,34 +15,21 @@ class MatchHeader extends StatelessWidget {
           height: 38,
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primary,
-            borderRadius: BorderRadius.circular(13),
+            borderRadius: BorderRadius.circular(12),
           ),
-          child: const Icon(
-            Icons.favorite_rounded,
-            color: Colors.white,
-            size: 23,
-          ),
+          child: const Icon(Icons.favorite_rounded, color: Colors.white),
         ),
         const SizedBox(width: 10),
         const Expanded(
           child: Text(
-            'match maker',
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -1,
-            ),
+            "It's a Match!",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
           ),
         ),
         IconButton(
-          tooltip: 'Voorkeuren',
-          onPressed: () {},
-          icon: const Icon(Icons.tune_rounded, size: 23),
-        ),
-        IconButton(
-          tooltip: 'Mijn profiel',
-          onPressed: () {},
-          icon: const Icon(Icons.account_circle_outlined, size: 26),
+          tooltip: 'Jouw profiel',
+          onPressed: onProfile,
+          icon: const Icon(Icons.person_outline_rounded),
         ),
       ],
     ),

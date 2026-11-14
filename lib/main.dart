@@ -1,7 +1,16 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:match_maker_demo/firebase_options.dart';
+import 'package:match_maker_demo/pages/auth_gate.dart';
+import 'package:match_maker_demo/pages/home.dart';
 import 'pages/discover.dart';
 
-void main() => runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runApp(const MyApp());
+}
+
 const matchPink = Color(0xFFE94B78);
 
 class MyApp extends StatelessWidget {
@@ -24,6 +33,6 @@ class MyApp extends StatelessWidget {
       ),
     ),
 
-    home: const DiscoverPage(),
+    home: const AuthGate(),
   );
 }

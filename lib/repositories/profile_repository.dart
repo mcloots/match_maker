@@ -1,38 +1,29 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/profile.dart';
 
-/// Lokale voorbeeldgegevens; later kan deze repository een service gebruiken.
 class ProfileRepository {
-  const ProfileRepository();
+  final profiles = FirebaseFirestore.instance.collection('profiles');
+  String get uid => FirebaseAuth.instance.currentUser!.uid;
 
-  List<Profile> getProfiles() => const [alex, noor, sam, lina];
+  // LIVE W2-03A: Watch the shared profiles
+  Stream<List<Profile>> watchProfiles() {
+    return profiles.snapshots().map(
+      (snapshot) => snapshot.docs
+      .where((doc) => doc.id != uid)
+      .map((doc) => Profile.fromMap(doc.id, doc.data()))
+      .toList()
+    );
+  }
 
-  // Fictieve volwassen profielen voor de mini-challenge.
-  static const alex = Profile(
-    name: 'Alex',
-    age: 23,
-    location: 'Antwerpen · 3 km',
-    imageAsset: 'assets/images/alex.jpg',
-    interests: ['Koffie', 'Reizen', 'Muziek'],
-  );
-  static const noor = Profile(
-    name: 'Noor',
-    age: 24,
-    location: 'Gent · 8 km',
-    imageAsset: 'assets/images/noor.jpg',
-    interests: ['Fotografie', 'Koken', 'Wandelen'],
-  );
-  static const sam = Profile(
-    name: 'Sam',
-    age: 25,
-    location: 'Mechelen · 12 km',
-    imageAsset: 'assets/images/sam.jpg',
-    interests: ['Sport', 'Films', 'Reizen'],
-  );
-  static const lina = Profile(
-    name: 'Lina',
-    age: 24,
-    location: 'Leuven · 6 km',
-    imageAsset: 'assets/images/lina.jpg',
-    interests: ['Dansen', 'Koffie', 'Citytrips'],
-  );
+  // LIVE W2-03B: Fetch your own profile once
+  Future<Profile?> fetchMyProfile() async {
+    final doc = await profiles.doc(uid).get();
+    return doc.exists ? Profile.fromMap(doc.id, doc.data()!) : null;
+  }
+
+  // LIVE W2-03C: Save your own profile
+  Future<void> saveProfile(Profile profile) async {
+    return await profiles.doc(uid).set(profile.toMap());
+  }
 }

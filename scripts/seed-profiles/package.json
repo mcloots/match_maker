@@ -1,0 +1,18 @@
+{
+  "name": "match-maker-seed-profiles",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "seed": "node seed.mjs",
+    "upload": "node --env-file=../../.env upload-photos.mjs",
+    "check": "node validate.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.118.0",
+    "firebase-admin": "^14.5.0",
+    "sharp": "^0.35.5"
+  }
+}

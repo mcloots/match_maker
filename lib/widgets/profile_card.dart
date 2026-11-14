@@ -3,7 +3,15 @@ import '../models/profile.dart';
 
 class ProfileCard extends StatelessWidget {
   const ProfileCard({super.key, required this.profile});
+
   final Profile profile;
+
+  Widget _photoPlaceholder() => const ColoredBox(
+    color: Color(0xFF877A83),
+    child: Center(
+      child: Icon(Icons.person, size: 80, color: Colors.white),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) => Container(
@@ -11,7 +19,7 @@ class ProfileCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(28),
       boxShadow: const [
         BoxShadow(
-          color: Color(0x263F2534),
+          color: Color(0x26302531),
           blurRadius: 24,
           offset: Offset(0, 10),
         ),
@@ -19,21 +27,22 @@ class ProfileCard extends StatelessWidget {
     ),
     child: LayoutBuilder(
       builder: (context, constraints) => ConstrainedBox(
-        // Een minimumhoogte voor de foto, geen maximum voor de tekst.
         constraints: BoxConstraints(minHeight: constraints.maxWidth * 1.25),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(28),
           child: Stack(
             alignment: Alignment.bottomLeft,
             children: [
-              // Card info
               Positioned.fill(
-                child: Image.asset(
-                  profile.imageAsset,
-                  fit: BoxFit.cover,
-                  alignment: const Alignment(0, -0.4),
-                  semanticLabel: 'Profielfoto van ${profile.name}',
-                ),
+                child: profile.imageUrl.isNotEmpty
+                    ? Image.network(
+                        profile.imageUrl,
+                        fit: BoxFit.cover,
+                        alignment: const Alignment(0, -0.4),
+                        semanticLabel: 'Profielfoto van ${profile.name}',
+                        errorBuilder: (context, error, stackTrace) => _photoPlaceholder(),
+                      )
+                    : _photoPlaceholder(),
               ),
               const Positioned.fill(
                 child: DecoratedBox(
@@ -54,101 +63,60 @@ class ProfileCard extends StatelessWidget {
               ),
               Positioned(
                 top: 20,
-                right: 20,
+                left: 20,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 7,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                   decoration: BoxDecoration(
                     color: const Color(0xCCFFFFFF),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.circle, color: Color(0xFF338563), size: 7),
-                      SizedBox(width: 6),
-                      Text(
-                        'ONLINE',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                    ],
+                  child: const Text(
+                    'PROFIEL',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1,
+                    ),
                   ),
                 ),
               ),
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: Padding(
-                  // Bovenaan blijft ruimte vrij voor de onlinebadge.
-                  padding: const EdgeInsets.fromLTRB(24, 110, 24, 24),
-                  child: DefaultTextStyle(
-                    style: const TextStyle(color: Colors.white),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${profile.name}, ${profile.age}',
-                          style: const TextStyle(
-                            fontSize: 34,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: -1,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.location_on_outlined,
-                              size: 17,
-                              color: Colors.white,
-                            ),
-                            const SizedBox(width: 4),
-                            Expanded(
-                              child: Text(
-                                profile.location,
-                                style: const TextStyle(fontSize: 14),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 110, 24, 24),
+                child: DefaultTextStyle(
+                  style: const TextStyle(color: Colors.white),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${profile.name}, ${profile.age}',
+                        style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w800),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const Icon(Icons.location_on_outlined, size: 18, color: Colors.white),
+                          const SizedBox(width: 6),
+                          Expanded(child: Text(profile.location)),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Wrap(
+                        spacing: 7,
+                        runSpacing: 7,
+                        children: [
+                          for (final interest in profile.interests)
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                              decoration: BoxDecoration(
+                                color: const Color(0x33FFFFFF),
+                                borderRadius: BorderRadius.circular(20),
                               ),
+                              child: Text(interest),
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        // Wrap laat interesses doorlopen als de kaart smaller wordt.
-                        Wrap(
-                          spacing: 7,
-                          runSpacing: 7,
-                          children: profile.interests
-                              .map(
-                                (interest) => Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 13,
-                                    vertical: 7,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0x33FFFFFF),
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(
-                                      color: const Color(0x55FFFFFF),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    interest,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ),
